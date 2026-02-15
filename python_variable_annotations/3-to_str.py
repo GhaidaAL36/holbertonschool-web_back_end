@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 type-annotated function takes float
-and return string 
+and return string
 """
 
 
