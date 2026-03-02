@@ -1,61 +1,47 @@
 #!/usr/bin/env python3
-"""Module for paginating a database of popular baby names."""
-
+"""Module to calculate start and end indices for pagination."""
 import csv
 import math
 from typing import List
 
 
-def index_range(page, page_size):
-    """Return a tuple of start and end indexes for the given pagination parameters.
-
-    Args:
-        page: the page number (1-indexed)
-        page_size: the number of items per page
-
-    Returns:
-        A tuple (start, end) representing the range of indexes.
-    """
-    start = (page - 1) * page_size
-    end = page * page_size
-    return (start, end)
+def index_range(page: int, page_size: int) -> tuple:
+    """Returns a tuple containing the start\
+        and end indices for pagination."""
+    first_index = (page - 1) * page_size
+    last_index = first_index + page_size
+    return first_index, last_index
 
 
 class Server:
-    """Server class to paginate a database of popular baby names."""
-
+    """Server class to paginate a database of popular baby names.
+    """
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
-        """Initialize Server with no cached dataset."""
         self.__dataset = None
 
     def dataset(self) -> List[List]:
-        """Return the cached dataset, loading from CSV if necessary."""
+        """Cached dataset
+        """
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
                 dataset = [row for row in reader]
             self.__dataset = dataset[1:]
+
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """Return the appropriate page of the dataset.
+        """Returns a list of rows from the dataset\
+            for the specified page and page size."""
+        assert isinstance(page, int) and page > 0
+        assert isinstance(page_size, int) and page_size > 0
 
-        Args:
-            page: the page number to retrieve (1-indexed, default 1)
-            page_size: the number of items per page (default 10)
+        start_index, end_index = index_range(page, page_size)
+        data = self.dataset()
 
-        Returns:
-            A list of rows for the requested page, or an empty list if out of range.
-        """
-        assert isinstance(page, int) and isinstance(page_size, int)
-        assert page > 0 and page_size > 0
-
-        start, end = index_range(page, page_size)
-        dataset = self.dataset()
-
-        if start >= len(dataset):
+        if start_index >= len(data):
             return []
 
-        return dataset[start:end]
+        return data[start_index:end_index]
