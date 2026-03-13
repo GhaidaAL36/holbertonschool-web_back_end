@@ -1,22 +1,32 @@
-// Pricing
-import Currency from './3-currency';
+import Currency from './3-currency.js';
 
 export default class Pricing {
-  constructor(amount = '', currency) {
-    this.amount = amount;
-    this.currency = currency;
+  constructor(amount, currency) {
+    this._amount = amount;
+    this._currency = currency;
   }
 
-displayFullPrice() {
-  const code = (this.currency_code);
-  const name = (this.currency._name);
-  const money = `${this.amount} ${name} (${code})`;
+  get amount() {
+    return this._amount;
+  }
 
-  return money;
+  set amount(value) {
+    this._amount = value;
+  }
+
+  get currency() {
+    return this._currency;
+  }
+
+  set currency(value) {
+    this._currency = value;
+  }
+
+  displayFullPrice() {
+    return `${this._amount} ${this._currency.name} (${this._currency.code})`;
+  }
+
+  static convertPrice(amount, conversionRate) {
+    return amount * conversionRate;
+  }
 }
-
-  static convertPrice(amount = 0, conversionRate = 0) {
-    if (typeof amount !== 'number') {
-      throw new TypeError('amount must be a string');
-    }
-    
